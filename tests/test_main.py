@@ -14,6 +14,10 @@ class TestMain(unittest.TestCase):
     @patch('os.makedirs')
     @patch('os.getenv')
     @patch('sys.argv', ['main.py', '--train'])
+    @patch('main.Trainer')
+    @patch('main.Tester')
+    @patch('main.Trainer')
+    @patch('main.Tester')
     def test_main_train(self, mock_getenv: MagicMock, mock_makedirs: MagicMock, 
                         mock_load_config: MagicMock, mock_tester: MagicMock, 
                         mock_trainer: MagicMock) -> None:
@@ -28,6 +32,7 @@ class TestMain(unittest.TestCase):
         main()
 
         # Assertions to verify the correct calls were made
+        mock_getenv.assert_called_with('LOCAL_RANK', '0')
         mock_makedirs.assert_called_once_with('weights')
         mock_load_config.assert_called_once_with('utils/args.yaml')
         mock_trainer.assert_called_once()
@@ -38,6 +43,8 @@ class TestMain(unittest.TestCase):
     @patch('os.makedirs')
     @patch('os.getenv')
     @patch('sys.argv', ['main.py', '--test'])
+    @patch('main.Trainer')
+    @patch('main.Tester')
     def test_main_test(self, mock_getenv: MagicMock, mock_makedirs: MagicMock, 
                        mock_load_config: MagicMock, mock_tester: MagicMock, 
                        mock_trainer: MagicMock) -> None:
@@ -52,6 +59,7 @@ class TestMain(unittest.TestCase):
         main()
 
         # Assertions to verify the correct calls were made
+        mock_getenv.assert_called_with('LOCAL_RANK', '0')
         mock_makedirs.assert_not_called()
         mock_load_config.assert_called_once_with('utils/args.yaml')
         mock_tester.assert_called_once()
